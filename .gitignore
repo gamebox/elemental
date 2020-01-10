@@ -1,6 +1,7 @@
 node_modules/
 build/
 dist/
+web_modules/
 
 # Logs
 logs
