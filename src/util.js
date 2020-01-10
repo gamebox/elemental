@@ -1,0 +1,1 @@
+export const kebabCase = (str) => str.replace(/[A-Z]/g, (a, b) => `-${a.toLowerCase()}`);
