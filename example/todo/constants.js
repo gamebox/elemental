@@ -1,0 +1,14 @@
+export const TODO_LIST_ADDED_TODO = "TODO_LIST#TODO_ADDED";
+export const TODO_LIST_VISIBILTY_FILTER_CHANGED = "TODO_LIST#FILTER_CHANGED";
+export const TODO_LIST_TOGGLED_COMPLETE_ALL = "TODO_LIST#TOGGLED_COMPLETE_ALL";
+export const TODO_LIST_CLEARED_COMPLETED = "TODO_LIST#CLEARED_COMPLETED";
+export const TODO_DELETED = "TODO#DELETED";
+export const TODO_SELECTED = "TODO#SELECTED";
+export const TODO_UNSELECTED = "TODO#UNSELECTED";
+export const TODO_COMPLETED = "TODO#COMPLETED";
+
+export const FILTERS = {
+  all: "all",
+  active: "active",
+  completed: "completed"
+};

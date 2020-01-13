@@ -1,52 +1,58 @@
-import {element, sink} from '../src/index.js';
-import { html } from '/web_modules/lit-html.js';
-import { render } from '../web_modules/lit-html.js';
+import { html } from "/web_modules/lit-html.js";
+import { render } from "../web_modules/lit-html.js";
+import "./basic/some-element.js";
+import "./basic/some-sink.js";
+import "./todo/app.js";
+import {
+  TODO_COMPLETED,
+  TODO_SELECTED,
+  TODO_UNSELECTED,
+  TODO_DELETED,
+  TODO_LIST_ADDED_TODO
+} from "./todo/constants.js";
 
-const properties = { countExclamations: { default: 1 } };
-
-const view = ({ countExclamations }, dispatch) => html`
-  <div @click=${() => dispatch("SOME_ELEMENT#CLICK")}>
-    Hello <slot>World</slot>${new Array(parseInt(countExclamations)).fill("!").join("")}
-  </div>
-`;
-
-const styles = `
-* {
-  color: ${Math.random() > .5 ? 'red' : 'blue'};
-}
-`;
-
-
-element("some-element", { styles, properties, view });
-
-sink('some-sink', {
-  properties: {
-    initialValue: {
-      default: 0
-    }
-  },
-  mapPropsToState(props) {
-    return { value: parseInt(props.initialValue) };
-  },
-  actionHandlers: {
-    'SOME_ELEMENT#CLICK': ({state, setState}) => {
-      setState({ value: state.value + 1 });
-    }
-  }
-});
-
-const template = html`
+const basicTemplate = html`
   <some-sink initial-value="3" name="a">
-      <some-element countExclamations="@a/value"></some-element>
+    <some-element countExclamations="@a/value"></some-element>
   </some-sink>
-  <some-sink initialValue="2" name="b">
-      <some-element countExclamations="@b/value">Tony</some-element>
+  <some-sink .initialValue=${2} name="b">
+    <some-element countExclamations="@b/value">Tony</some-element>
   </some-sink>
   <some-sink initialValue="3" name="c">
-      <some-element countExclamations="@c/value">Someone</some-element>
+    <some-element countExclamations="@c/value">Someone</some-element>
   </some-sink>
-  
-  Some other text
+
+  Click any of the above to increase the exclamation points.
 `;
 
-render(template, document.body);
+const otherTemplate = html`
+  <todo-app></todo-app>
+`;
+
+function addExampleMountPoint(id, title, actionsToWatch = []) {
+  const div = document.createElement("div");
+  div.id = id;
+  const header = document.createElement("h1");
+  header.innerText = title;
+  const mount = document.createElement("div");
+  div.appendChild(header);
+  div.appendChild(mount);
+  document.body.appendChild(div);
+  actionsToWatch.forEach(action => {
+    div.addEventListener(action, e => console.log(action, e.detail));
+  });
+  div.style = "position: relative";
+  return mount;
+}
+
+render(basicTemplate, addExampleMountPoint("basic", "Basic Example"));
+render(
+  otherTemplate,
+  addExampleMountPoint("todo", "TODO Application", [
+    TODO_COMPLETED,
+    TODO_SELECTED,
+    TODO_UNSELECTED,
+    TODO_DELETED,
+    TODO_LIST_ADDED_TODO
+  ])
+);
