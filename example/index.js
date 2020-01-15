@@ -13,13 +13,13 @@ import {
 
 const basicTemplate = html`
   <some-sink initial-value="3" name="a">
-    <some-element countExclamations="@a/value"></some-element>
+    <some-element count-exclamations="@a/value"></some-element>
   </some-sink>
   <some-sink .initialValue=${2} name="b">
-    <some-element countExclamations="@b/value">Tony</some-element>
+    <some-element count-exclamations="@b/value">Tony</some-element>
   </some-sink>
-  <some-sink initialValue="3" name="c">
-    <some-element countExclamations="@c/value">Someone</some-element>
+  <some-sink initial-value="3" name="c">
+    <some-element count-exclamations="@c/value">Someone</some-element>
   </some-sink>
 
   Click any of the above to increase the exclamation points.

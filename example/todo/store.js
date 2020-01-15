@@ -10,7 +10,7 @@ import {
   TODO_UNSELECTED
 } from "./constants.js";
 
-const findNextId = todos =>
+const findNextId = (todos = []) =>
   todos.reduce((acc, t) => (t.id > acc ? t.id : acc), 0) + 1;
 const newTodo = (id, text) => ({ id, text, complete: false });
 
