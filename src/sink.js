@@ -10,8 +10,8 @@ import BaseElement from "./base.js";
 /**
  * Sink Config
  * @typedef {Object} SinkConfig
- * @property {Object} properties
- * @property {Object} actionHandlers
+ * @property {Object<string, *>} properties
+ * @property {Object<string, function>} actionHandlers
  * @property {SinkConfig~mapPropsToState} mapPropsToState
  */
 
@@ -44,7 +44,13 @@ export function sink(tag, config) {
           ...result
         };
         Object.keys(result).forEach(key => {
-          (this[WATCHERS][key] || []).forEach(fn => fn(this.state[key]));
+          (this[WATCHERS][key] || []).forEach(fn => {
+            console.log(
+              `${this.tagName}[${this.componentId}] Calling watcher for ${key}`,
+              this.state[key]
+            );
+            fn(this.state[key]);
+          });
         });
       }
 

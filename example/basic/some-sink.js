@@ -1,4 +1,4 @@
-import { sink } from "../../src/index.js";
+import { sink, createRef } from "../../src/index.js";
 
 sink("some-sink", {
   properties: {
@@ -12,7 +12,8 @@ sink("some-sink", {
       value:
         typeof props.initialValue === "string"
           ? parseInt(props.initialValue)
-          : props.initialValue
+          : props.initialValue,
+      ref: createRef()
     };
   },
   actionHandlers: {

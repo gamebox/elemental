@@ -19,6 +19,7 @@ export default class extends HTMLElement {
     this.componentId = `${btoa(Date.now() * Math.floor(Math.random() * 30))}`;
     this.setAttribute("component-id", this.componentId);
     this[PENDING_SELECTABLES] = new Set();
+    this["HAD_INITIAL_RENDER"] = false;
   }
 
   static get observedAttributes() {
@@ -35,7 +36,8 @@ export default class extends HTMLElement {
     }
     const [sinkName, propName] = rawValue.slice(1).split("/");
     let parent = this.parentElement;
-    while (parent.tagName.toLowerCase() !== "body") {
+    while (parent && parent.tagName.toLowerCase() !== "body") {
+      console.log(`looking for ${sinkName} in ${parent.tagName}`);
       if (parent[SINK_NAME] && parent[SINK_NAME] === sinkName) {
         const init = parent[SELECT_SINK_PROP](
           propName,
@@ -45,6 +47,9 @@ export default class extends HTMLElement {
         );
         this[PENDING_SELECTABLES].delete(key);
         this[key] = firstDefined(init, this[PROPERTIES][key].default);
+        if (this[CONNECTED]) {
+          this.render();
+        }
         break;
       } else {
         parent = parent.parentElement;
@@ -52,7 +57,9 @@ export default class extends HTMLElement {
     }
   }
 
-  render() {}
+  render() {
+    this["HAD_INITIAL_RENDER"] = true;
+  }
 
   [CREATE_PROP](key) {
     const that = this;
@@ -65,8 +72,12 @@ export default class extends HTMLElement {
         if (selectableSyntax(val)) {
           that[PENDING_SELECTABLES].add(key);
         }
+        const oldVal = that[PROPS][key];
         that[PROPS][key] = val;
-        if (that[CONNECTED]) {
+        if (
+          (oldVal !== val || that["HAD_INITIAL_RENDER"] === false) &&
+          that[CONNECTED]
+        ) {
           that.render();
         }
         return val;
@@ -118,5 +129,10 @@ export default class extends HTMLElement {
     this[WITH_SELECTABLES] = withSelectables;
     this[PROPS] = {};
     this[PROP_KEYS].forEach(this[CREATE_PROP].bind(this));
+  }
+
+  connectedCallback() {
+    // console.log("Connected element");
+    this.render();
   }
 }
